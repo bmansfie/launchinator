@@ -8,7 +8,7 @@ var rests = parse(raw);
 
 var data = [];
 
-for (var i = 0; i < rests.length; i++) {
+for (var i = 1; i < rests.length; i++) {
     data.push({
         id: parseInt(rests[i][0]),
         name: rests[i][1]

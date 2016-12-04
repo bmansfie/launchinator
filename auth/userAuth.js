@@ -11,16 +11,17 @@ var users = [];
 
 var adminList = ['amber', 'brian', 'carl', 'david', 'username'];
 
-for (var i = 0; i < userName.length; i++) {
+for (var i = 1; i < userName.length; i++) {
     users.push({
-        name: userName[i].toString(),
+        name: userName[i][0].toString(),
+        pass: userName[i][1].toString(),
         isAdmin: _.contains(adminList, userName[i].toString())
     });
 }
 
 function isValidUser(user, pass) {
     for (var i = 0; i < users.length; i++) {
-        if (user == users[i].name)
+        if (user == users[i].name && pass == users[i].pass)
             return users[i];
     }
     return undefined;
@@ -41,7 +42,7 @@ function middle(req, res, next) {
     } else {
         var user = auth(req);
         if (user) {
-            if (!isValidUser(user.name) || (req.url.indexOf('/api/restaurant') >= 0 && !isAdmin(user.name))) {
+            if (!isValidUser(user.name, user.pass) || (req.url.indexOf('/api/restaurant') >= 0 && !isAdmin(user.name))) {
                 res.status(403);
                 res.json({ message: 'Forbidden' });
             } else {
