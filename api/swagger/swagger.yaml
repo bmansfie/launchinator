@@ -1,0 +1,261 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Lunchinator 3000
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  - http
+consumes:
+  - application/json
+  - application/xml
+produces:
+  - application/json
+paths:
+  /api/restaurants:
+    # binds a127 app logic to a route
+    x-swagger-router-controller: RestaurantController
+    get:
+      description: The service provides a list of all restaurants configured for the lunch group.  Requires admin authentication.
+      # controller method name
+      operationId: getAllRestaurants
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Restaurants"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: The service provides a list of all restaurants configured for the lunch group.  Requires admin authentication.
+      operationId: addNewRestaurant
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: body
+          description: The name of the restaurant.
+          required: true
+          schema:
+            $ref: "#/definitions/RestaurantName"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Restaurant"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /api/restaurants/{id}:
+    x-swagger-router-controller: RestaurantController
+    get:
+      description: The service provides a restaurant with a given id.  Requires admin authentication.
+      operationId: getRestaurant
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: Restaurant id.
+          required: true
+          type: number
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/RestaurantName"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      description: The service accepts a restaurant to add.  Requires admin authentication.
+      operationId: changeRestaurant
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: Restaurant id.
+          required: true
+          type: number
+
+        - name: name
+          in: body
+          description: The name of the restaurant.
+          schema:
+            $ref: "#/definitions/Restaurant"
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/RestaurantName"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      description: The service deletes a restaurant with a given id.  Requires admin authentication.
+      operationId: removeRestaurant
+      produces:
+        - text/plain
+        - application/json
+      consumes:
+        - text/plain
+      parameters:
+        - name: id
+          in: path
+          description: Restaurant id.
+          required: true
+          type: number
+      responses:
+        "200":
+          description: Success
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /api/ballot:
+    x-swagger-router-controller: BallotController
+    get:
+      description: The service provides a list of up to 5 restaurants to vote on.
+      operationId: getBallot
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/Restaurants"
+        "409":
+          description: Expired
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /api/vote:
+    x-swagger-router-controller: BallotController
+    post:
+      description: Casts a vote.
+      operationId: castVote
+      produces:
+        - text/plain
+        - application/json
+        - application/octet-stream
+      consumes:
+        - text/plain
+        - application/json
+        - application/octet-stream
+      parameters:
+        - name: id
+          in: query
+          description: Restaurant id.
+          required: true
+          type: number
+      responses:
+        "200":
+          description: Success
+        "409":
+          description: Expired
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /api/voting-closes:
+    x-swagger-router-controller: BallotController
+    post:
+      description: Sets a time to close voting.
+      operationId: closeVoteAt
+      produces:
+        - text/plain
+      consumes:
+        - text/plain
+        - application/json
+        - application/octet-stream
+      parameters:
+        - name: time
+          in: query
+          description: Closing time in 24 hour format (1300 for 1:00)
+          required: true
+          type: number
+      responses:
+        "200":
+          description: Success
+  /api/tomorrow:
+    x-swagger-router-controller: BallotController
+    post:
+      description: Resets the voting option.
+      operationId: tomorrowReset
+      produces:
+        - text/plain
+      consumes:
+        - text/plain
+        - application/json
+        - application/octet-stream
+      responses:
+        "200":
+          description: Success
+  /api/winner:
+    x-swagger-router-controller: BallotController
+    post:
+      description: Displays the vote leader.
+      operationId: winner
+      produces:
+        - application/json
+        - text/plain
+      consumes:
+        - text/plain
+        - application/json
+        - application/octet-stream
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: "#/definitions/RestaurantName"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  Restaurants:
+        type: array
+        items:
+          $ref: "#/definitions/Restaurant"
+  Restaurant:
+        type: object
+        properties:
+          id:
+            type: number
+          name:
+            type: string
+          isSlow:
+            type: boolean
+          daysAgo:
+            type: number
+  RestaurantName:
+        type: object
+        properties:
+          name:
+            type: string
+  ErrorResponse:
+    required:
+      - message
+    properties:
+      message:
+        type: string
