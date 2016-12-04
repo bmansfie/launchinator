@@ -114,11 +114,11 @@ function checkForWinner() {
         var winner = getWinner();
         startVoting = false;
         if (winner) {
-            T.post('statuses/update', { status: 'Where to for lunch? ' + winner.name + '!' });
+            //T.post('statuses/update', { status: 'Where to for lunch? ' + winner.name + '!' });
             console.log('Where to for lunch? ' + winner.name + '!');
             restaurants.pick(winner.name);
         } else {
-            T.post('statuses/update', { status: 'Good luck with lunch today' });
+            //T.post('statuses/update', { status: 'Good luck with lunch today' });
             console.log('Good luck with lunch today');
         }
     }
