@@ -2,10 +2,10 @@
 # How to deploy and run this code.
 
 * Install node 6.x with companion npm
-* Install swagger command line tools 'npm install -g swagger'
+* Install swagger command line tools `npm install -g swagger`
 * Clone this repo
-* run 'swagger project test' to verify that basic functionality is present.
-* run 'swagger project start' to launch
+* run `swagger project test` to verify that basic functionality is present.
+* run `swagger project start` to launch
 
 # Assignment
 
