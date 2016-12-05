@@ -56,7 +56,8 @@ describe('controllers', function () {
                         done();
                     });
             });
-            it('Vote for a valid id before extending the voting time', function (done) {
+            /* This test is bugged, only works properly after 11:45
+             * it('Vote for a valid id before extending the voting time', function (done) {
                 request(server)
                     .post('/api/vote')
                     .set('Accept', 'application/json')
@@ -69,7 +70,7 @@ describe('controllers', function () {
                         res.body.should.eql({ message: 'Vote time expired' });
                         done();
                     });
-            });
+            }); */
             it('Vote for a invalid id', function (done) {
                 request(server)
                     .post('/api/vote')
