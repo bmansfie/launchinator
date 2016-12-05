@@ -46,7 +46,6 @@ function middle(req, res, next) {
                 res.status(403);
                 res.json({ message: 'Forbidden' });
             } else {
-                //console.log('approved ' + JSON.stringify(user) + ' to access ' + req.url);
                 req.user = user.name;
                 next();
             }

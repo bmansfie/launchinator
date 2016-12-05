@@ -1,3 +1,14 @@
+
+# How to deploy and run this code.
+
+* Install node 6.x with companion npm
+* Install swagger command line tools 'npm install -g swagger'
+* Clone this repo
+* run 'swagger project test' to verify that basic functionality is present.
+* run 'swagger project start' to launch
+
+# Assignment
+
 You have been asked to implement the back-end service for _Lunchinator 3000_, a new software application that answers
 the question "Where to for lunch?" Each day, Lunchinator 3000 chooses a list of suggested restaurants from your lunch
 group's restaurant list, collects and tallies the votes, and then decides where you are going to eat. No more standing
