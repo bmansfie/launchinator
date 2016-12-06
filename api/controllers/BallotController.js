@@ -29,6 +29,7 @@ function getBallot(req, res) {
 }
 
 var votes = {};
+var onePmMeeting = false;
 var closingTime = new Date();
 closingTime.setHours(11);
 closingTime.setMinutes(45);
@@ -46,6 +47,9 @@ function castVote(req, res) {
             res.status(409);
             res.json({ message: 'Vote time expired' });
         } else {
+            if (req.query.onePmMeeting) {
+                onePmMeeting = true;
+            }
             votes[req.user] = req.query.id;
             console.log(JSON.stringify(votes));
             res.end();
@@ -63,6 +67,7 @@ function closeVoteAt(req, res) {
     startVoting = true;
     closingTime.setHours(req.query.time / 100);
     closingTime.setMinutes(req.query.time % 100);
+    onePmMeeting = false;
     res.end();
 }
 
@@ -107,19 +112,22 @@ function winner(req, res) {
 }
 
 // This function sets up it's own call back, it will run once per minute
-// We run it here (once only!) to start the process
+// We run it here (once only!) to start the process, do not call it again elsewhere.
 checkForWinner();
 function checkForWinner() {
     if (startVoting && new Date() > closingTime) {
         var winner = getWinner();
+        var extra = (onePmMeeting ? ' Better Hurry!!' : '');
         startVoting = false;
         if (winner) {
-            //T.post('statuses/update', { status: 'Where to for lunch? ' + winner.name + '!' });
-            console.log('Where to for lunch? ' + winner.name + '!');
+            var announcement = 'Where to for lunch? ' + winner.name + '!' + extra;
+            //T.post('statuses/update', { status: announcement });
+            console.log(announcement);
             restaurants.pick(winner.name);
         } else {
-            //T.post('statuses/update', { status: 'Good luck with lunch today' });
-            console.log('Good luck with lunch today');
+            announcement = 'Good luck with lunch today.';
+            //T.post('statuses/update', { status: announcement });
+            console.log(announcement);
         }
     }
     setTimeout(checkForWinner, 60000);

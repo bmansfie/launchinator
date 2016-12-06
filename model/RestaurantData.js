@@ -97,6 +97,7 @@ function remove(id) {
 
 function getBallot() {
     var ballot = [];
+    var slowTotal = 0;
 
     while (ballot.length < 5 && ballot.length < data.length) {
         var candidate = data[Math.floor(Math.random()*data.length)];
@@ -109,8 +110,10 @@ function getBallot() {
         // the logic !(candidate.daysAgo < 5) must pass when undefined, that
         // is why it is defined this way with a not.
         // in the absense of data we assume it hasn't been picked in a while
-        if (!found && !(candidate.daysAgo < 5)) {
+        if (!found && !(candidate.daysAgo < 5) && slowTotal < 2) {
             ballot.push(candidate);
+            if (candidate.isSlow)
+                slowTotal++;
         }
     }
     return ballot;

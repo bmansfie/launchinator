@@ -167,6 +167,10 @@ paths:
           description: Restaurant id.
           required: true
           type: number
+        - name: onePmMeeting
+          in: query
+          description: Declare if you have a 1PM meeting.
+          type: boolean
       responses:
         "200":
           description: Success
